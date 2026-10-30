@@ -127,7 +127,7 @@ def submit(request, course_id):
     submission.choices.set(selected_choice_ids)
     submission.save()
 
-    return HttpResponseRedirect(reverse('onlinecourse:exam_result', args=(course.id, submission.id)))
+    return HttpResponseRedirect(reverse('onlinecourse:show_exam_result', args=(course.id, submission.id)))
 
 
 def show_exam_result(request, course_id, submission_id):
@@ -153,7 +153,9 @@ def show_exam_result(request, course_id, submission_id):
         'submission': submission,
         'selected_ids': selected_ids,
         'grade': grade,
+        'score': learner_score,
         'learner_score': learner_score,
+        'possible': total_score,
         'total_score': total_score,
         'passed_question_ids': passed_question_ids,
     }

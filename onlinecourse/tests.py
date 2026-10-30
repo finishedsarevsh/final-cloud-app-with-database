@@ -55,13 +55,14 @@ class ExamTestCase(TestCase):
         # Follow redirect to exam result
         submission = Submission.objects.filter(enrollment=self.enrollment).last()
         self.assertIsNotNone(submission)
-        result_url = reverse('onlinecourse:exam_result', args=[self.course.id, submission.id])
+        result_url = reverse('onlinecourse:show_exam_result', args=[self.course.id, submission.id])
         self.assertRedirects(response, result_url)
 
         res_page = client.get(result_url)
         self.assertEqual(res_page.status_code, 200)
         self.assertContains(res_page, "Congratulations, Test!")
         self.assertContains(res_page, "score 100/100")
+        self.assertIn('possible', res_page.context)
 
     def test_submission_and_result_failed(self):
         client = Client()
@@ -76,7 +77,7 @@ class ExamTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
 
         submission = Submission.objects.filter(enrollment=self.enrollment).last()
-        result_url = reverse('onlinecourse:exam_result', args=[self.course.id, submission.id])
+        result_url = reverse('onlinecourse:show_exam_result', args=[self.course.id, submission.id])
         res_page = client.get(result_url)
         self.assertEqual(res_page.status_code, 200)
         self.assertContains(res_page, "Failed!")
